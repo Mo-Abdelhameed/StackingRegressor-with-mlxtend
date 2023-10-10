@@ -7,7 +7,7 @@ from joblib import dump, load
 from sklearn.exceptions import NotFittedError
 from config import paths
 from schema.data_schema import RegressionSchema
-from utils import read_json_as_dict, clear_dir
+from utils import read_json_as_dict
 from typing import List
 from mlxtend.regressor import StackingRegressor
 from sklearn.ensemble import RandomForestRegressor, ExtraTreesRegressor, GradientBoostingRegressor, AdaBoostRegressor
@@ -65,7 +65,6 @@ class Regressor:
     def __init__(self,
                  train_input: pd.DataFrame,
                  schema: RegressionSchema,
-                 result_path: str = paths.RESULT_PATH
                  ):
         """Construct a New Regressor."""
         self._is_trained: bool = False
@@ -74,10 +73,6 @@ class Regressor:
         self.schema = schema
         self.model_name = "StackingRegressor"
         self.model_config = read_json_as_dict(paths.MODEL_CONFIG_FILE_PATH)
-
-        if os.path.exists(result_path):
-            clear_dir(result_path)
-
         self.predictor = StackingRegressor(regressors=self.regressor_models(), meta_regressor=RandomForestRegressor())
 
     def regressor_models(self) -> List:
